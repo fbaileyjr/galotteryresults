@@ -2,11 +2,11 @@
 """Models for API requests & responses."""
 import dataclasses
 import datetime
+import json
 import re
 from datetime import date
 from time import sleep
 
-import json1
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
