@@ -1,35 +1,37 @@
-import ga_api_endpoints
 import json
 import re
 from datetime import date
 from time import sleep
 
+import ga_api_endpoints
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
 day_dict = {
-    1 : "Jan",
-    2 : "Feb",
-    3 : "Mar", 
-    4 : "Apr",
-    5 : "May",
-    6 : "Jun",
-    7 : "Jul",
-    8 : "Aug",
-    9 : "Sep",
-    10 : "Oct",
-    11 : "Nov",
-    12 : "Dec",    
+    1: "Jan",
+    2: "Feb",
+    3: "Mar",
+    4: "Apr",
+    5: "May",
+    6: "Jun",
+    7: "Jul",
+    8: "Aug",
+    9: "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec",
 }
 
-def get_info(url = "athensga.craigslist.org"):
+
+def get_info(url="athensga.craigslist.org"):
     job_url = f"{url}/search/jjj?query=voice+over+%7C+voice+jobs+%7C+voice+wanted+%7C++voiceovers+%7C+voice+talent+%7C+voice+recordings"
     gig_url = f"{url}/search/ggg?query=voice+over+%7C+voice+jobs+%7C+voice+wanted+%7C++voiceovers+%7C+voice+talent+%7C+voice+recordings"
-    payload={} 
-    headers = {'Cookie': 'cl_b=4|93fc8594e7b76f0c01a65a2c12434158c5a57e95|1625772264ONi0U'}
+    payload = {}
+    headers = {
+        'Cookie': 'cl_b=4|93fc8594e7b76f0c01a65a2c12434158c5a57e95|1625772264ONi0U'}
     job_response = requests.request("GET", job_url)
     gig_response = requests.request("GET", gig_url)
-    results = { "jobs" : job_response, "gig" : gig_response }
+    results = {"jobs": job_response, "gig": gig_response}
     return results
     '''
     get all elements for <ul class="rows" id="search-results">
@@ -41,10 +43,11 @@ def get_info(url = "athensga.craigslist.org"):
    
     '''
 
+
 def get_list_of_us_cities():
     results = requests.request("GET", "https://geo.craigslist.org/iso/us")
     site = "geo-site-list-container"
-    soup = BeautifulSoup(results.content,  parse_only=SoupStrainer('a'))    
+    soup = BeautifulSoup(results.content, parse_only=SoupStrainer('a'))
     sitelinks = []
     craigslist_regex = "https:\/\/\w+\.craigslist\.org"
     for link in soup:
@@ -52,8 +55,10 @@ def get_list_of_us_cities():
             sitelinks.append(link['href'])
     return sitelinks
 
+
 def get_search_results(response):
-    response = requests.request("GET", "https://atlanta.craigslist.org/search/jjj?query=office")
+    response = requests.request(
+        "GET", "https://atlanta.craigslist.org/search/jjj?query=office")
     soup = BeautifulSoup(response.content, 'html.parser')
     search_results = soup.find(id="search-results")
     list_results = search_results.find_all(search_results, class_="result-row")
@@ -96,11 +101,12 @@ def get_search_results(response):
     '''
     pass
 
+
 def jdump(obj):
     print(json.dumps(obj, indent=2))
 
-response = get_info("https://athensga.craigslist.org")
 
+response = get_info("https://athensga.craigslist.org")
 
 
 '''
