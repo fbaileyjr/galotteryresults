@@ -41,40 +41,62 @@ def get_search_results(game, size):
 
 
 def parse_fantasy_5(response):
-    results_list = []
+    first_list,second_list,third_list,fourth_list,fifth_list = [],[],[],[],[]
     for draw in response.json().get('draws'):
-        time = draw.get('drawTime')
-        temp_date = datetime.datetime.fromtimestamp(time / 1000)
-        date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
-        draw_results = {date: draw.get('results')[0].get('primary')}
-        results_list.append(draw_results)
-    return results_list[::-1]
+        #time = draw.get('drawTime')
+        #temp_date = datetime.datetime.fromtimestamp(time / 1000)
+        #date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
+        if draw.get('results')[0].get('primary'):
+             first_list.append(draw.get('results')[0].get('primary')[0])
+             second_list.append(draw.get('results')[0].get('primary')[1])
+             third_list.append(draw.get('results')[0].get('primary')[2])
+             fourth_list.append(draw.get('results')[0].get('primary')[3])
+             fifth_list.append(draw.get('results')[0].get('primary')[4])
+        draw_results = {"first" : first_list, "second" : second_list, "third" : third_list, "fourth" : fourth_list, "fifth" : fifth_list}
+    return draw_results
 
 
 def parse_mega(response):
-    results_list = []
+    first_list,second_list,third_list,fourth_list,fifth_list,mega_list = [],[],[],[],[],[]
     for draw in response.json().get('draws'):
-        time = draw.get('drawTime')
-        temp_date = datetime.datetime.fromtimestamp(time / 1000)
-        date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
-        draw_results = {date: {"primary": draw.get('results')[0].get(
-            'primary'), "megaball": draw.get('results')[0].get('secondary')[0]}}
-        results_list.append(draw_results)
-    return results_list[::-1]
+        # time = draw.get('drawTime')
+        # temp_date = datetime.datetime.fromtimestamp(time / 1000)
+        # date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
+        if draw.get('results')[0].get('primary'):
+            first_list.append(draw.get('results')[0].get('primary')[0])
+            second_list.append(draw.get('results')[0].get('primary')[1])
+            third_list.append(draw.get('results')[0].get('primary')[2])
+            fourth_list.append(draw.get('results')[0].get('primary')[3])
+            fifth_list.append(draw.get('results')[0].get('primary')[4])
+        if draw.get('results')[0].get('secondary')[0]:
+            mega_list.append(draw.get('results')[0].get('secondary')[0])
+        draw_results = {
+            "first" : first_list, "second" : second_list,"third" : third_list, 
+            "fourth" : fourth_list, "fifth" : fifth_list, "mega" : mega_list
+        }
+    return draw_results
 
 
 
 def parse_powerball(response):
-    results_list = []
+    first_list,second_list,third_list,fourth_list,fifth_list,pb_list = [],[],[],[],[],[]
     for draw in response.json().get('draws'):
-        time = draw.get('drawTime')
-        temp_date = datetime.datetime.fromtimestamp(time / 1000)
-        date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
-        draw_results = {date: {"primary": draw.get('results')[0].get(
-            'primary'), "powerball": draw.get('results')[0].get('secondary')[0]}}
-        results_list.append(draw_results)
-    return results_list[::-1]
-
+        # time = draw.get('drawTime')
+        # temp_date = datetime.datetime.fromtimestamp(time / 1000)
+        # date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
+        if draw.get('results')[0].get('primary'):
+            first_list.append(draw.get('results')[0].get('primary')[0])
+            second_list.append(draw.get('results')[0].get('primary')[1])
+            third_list.append(draw.get('results')[0].get('primary')[2])
+            fourth_list.append(draw.get('results')[0].get('primary')[3])
+            fifth_list.append(draw.get('results')[0].get('primary')[4])
+        if draw.get('results')[0].get('secondary')[0]:
+            pb_list.append(draw.get('results')[0].get('secondary')[0])
+        draw_results = {
+            "first" : first_list, "second" : second_list,"third" : third_list, 
+            "fourth" : fourth_list, "fifth" : fifth_list, "powerball" : pb_list
+        }
+    return draw_results
 
 def jdump(obj):
     print(json.dumps(obj, indent=2))
