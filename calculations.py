@@ -4,11 +4,11 @@ import statistics
 
 def cold_numbers(game, list):
 	game_list = {
-	    "fantasy5" : 45,
-	    "mega" : 56,
-	    "megaball" : 72,
-	    "pb" : 60,
-	    "powerball" : 65,
+	    "fantasy5" : 42,
+	    "megaball" : 70,
+	    "mb" : 25,
+	    "powerball" : 69,
+	    "pb" : 26,
 	}
 
 
