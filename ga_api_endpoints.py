@@ -7,9 +7,8 @@ import re
 from datetime import date
 from time import sleep
 
-from bs4 import BeautifulSoup, SoupStrainer
-
 import requests
+from bs4 import BeautifulSoup, SoupStrainer
 
 fantasy_5_url = "https://www.galottery.com/api/v2/draw-games/draws/page?order=desc&previous-draws=180&game-names=fantasy5&size=20&status=PAYABLE"
 mega_million_url = "https://www.galottery.com/api/v2/draw-games/draws/page?order=desc&previous-draws=180&game-names=mega&size=20&status=PAYABLE"
@@ -51,11 +50,11 @@ def parse_fantasy_5(response):
             #temp_date = datetime.datetime.fromtimestamp(time / 1000)
             #date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
             if draw.get('results')[0].get('primary'):
-                 first_list.append(draw.get('results')[0].get('primary')[0])
-                 second_list.append(draw.get('results')[0].get('primary')[1])
-                 third_list.append(draw.get('results')[0].get('primary')[2])
-                 fourth_list.append(draw.get('results')[0].get('primary')[3])
-                 fifth_list.append(draw.get('results')[0].get('primary')[4])
+                 first_list.append(int(draw.get('results')[0].get('primary')[0]))
+                 second_list.append(int(draw.get('results')[0].get('primary')[1]))
+                 third_list.append(int(draw.get('results')[0].get('primary')[2]))
+                 fourth_list.append(int(draw.get('results')[0].get('primary')[3]))
+                 fifth_list.append(int(draw.get('results')[0].get('primary')[4]))
         draw_results = {"first" : first_list, "second" : second_list, "third" : third_list, "fourth" : fourth_list, "fifth" : fifth_list}
         return draw_results
 
@@ -67,13 +66,13 @@ def parse_mega(response):
             # temp_date = datetime.datetime.fromtimestamp(time / 1000)
             # date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
             if draw.get('results')[0].get('primary'):
-                first_list.append(draw.get('results')[0].get('primary')[0])
-                second_list.append(draw.get('results')[0].get('primary')[1])
-                third_list.append(draw.get('results')[0].get('primary')[2])
-                fourth_list.append(draw.get('results')[0].get('primary')[3])
-                fifth_list.append(draw.get('results')[0].get('primary')[4])
+                first_list.append(int(draw.get('results')[0].get('primary')[0]))
+                second_list.append(int(draw.get('results')[0].get('primary')[1]))
+                third_list.append(int(draw.get('results')[0].get('primary')[2]))
+                fourth_list.append(int(draw.get('results')[0].get('primary')[3]))
+                fifth_list.append(int(draw.get('results')[0].get('primary')[4]))
                 # need to remove MB-
-                mega_list.append(draw.get('results')[0].get('primary')[6])
+                mega_list.append(int(draw.get('results')[0].get('primary')[6]))
         draw_results = {
             "first" : first_list, "second" : second_list,"third" : third_list, 
             "fourth" : fourth_list, "fifth" : fifth_list, "mega" : mega_list
@@ -87,12 +86,12 @@ def parse_powerball(response):
         # temp_date = datetime.datetime.fromtimestamp(time / 1000)
         # date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
         if draw.get('results')[0].get('primary'):
-            first_list.append(draw.get('results')[0].get('primary')[0])
-            second_list.append(draw.get('results')[0].get('primary')[1])
-            third_list.append(draw.get('results')[0].get('primary')[2])
-            fourth_list.append(draw.get('results')[0].get('primary')[3])
-            fifth_list.append(draw.get('results')[0].get('primary')[4])
-            pb_list.append(draw.get('results')[0].get('primary')[6])
+            first_list.append(int(draw.get('results')[0].get('primary')[0]))
+            second_list.append(int(draw.get('results')[0].get('primary')[1]))
+            third_list.append(int(draw.get('results')[0].get('primary')[2]))
+            fourth_list.append(int(draw.get('results')[0].get('primary')[3]))
+            fifth_list.append(int(draw.get('results')[0].get('primary')[4]))
+            pb_list.append(int(draw.get('results')[0].get('primary')[6]))
         draw_results = {
             "first" : first_list, "second" : second_list,"third" : third_list, 
             "fourth" : fourth_list, "fifth" : fifth_list, "powerball" : pb_list
@@ -110,7 +109,7 @@ while True:
     else:
         print(f'Please provide a valid game selection.')
 
-response = get_search_results(game_dict.get(choice) , 20)
+response = get_search_results(game_dict.get(choice.lower()) , 20)
 
 if choice.lower() == 'fantasy 5':
     results = parse_fantasy_5(response)

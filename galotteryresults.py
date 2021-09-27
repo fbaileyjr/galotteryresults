@@ -3,10 +3,9 @@ import re
 from datetime import date
 from time import sleep
 
-from bs4 import BeautifulSoup, SoupStrainer
-
 import ga_api_endpoints as endpoints
 import requests
+from bs4 import BeautifulSoup, SoupStrainer
 
 
 def jdump(obj):
@@ -21,7 +20,7 @@ if __name__ == "__main__":
         else:
             print(f'Please provide a valid game selection.')
 
-    response = endpoints.get_search_results(choice, 20)
+    response = endpoints.get_search_results(choice.lower(), 20)
 
     game_choice = {'fantasy 5' : 'parse_fantasy_5', 'mega millions': 'parse_mega', 'powerball' : 'parse_powerball'}
 
