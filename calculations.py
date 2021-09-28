@@ -1,7 +1,8 @@
 import re
 import statistics
 
-
+# https://towardsdatascience.com/time-series-forecasting-with-recurrent-neural-networks-74674e289816
+s
 def cold_numbers(game, list):
 	game_list = {
 	    "fantasy5" : 42,
