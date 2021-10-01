@@ -31,16 +31,25 @@ powerball_url = "https://www.galottery.com/api/v2/draw-games/draws/page?order=de
 
 # dict of game keys
 game_dict = {'fantasy 5': 'FANTASY+5',
-             'mega millions': 'MEGA+MILLIONS', 'powerBall': 'POWERBALL'}
+             'mega millions': 'MEGA+MILLIONS', 'powerball': 'POWERBALL'}
 
 # might have to paginate
 # dict_keys(['nextPageUrl', 'pageUrls', 'nextItems', 'previousItems', 'draws'])
 
 #class Endpoints():          
 def get_search_results(game, size):
-    url = f'https://www.galottery.com/api/v2/draw-games/draws/page?order=desc&previous-draws={size}&game-names={game}&size={size}&status=CLOSED'
-    response = requests.request("GET", url)
-    return response
+    if game == 'fantasy 5':
+        url = f'https://www.galottery.com/api/v2/draw-games/draws/page?order=desc&previous-draws={size}&game-names={game}&size={size}&status=CLOSED'
+        response = requests.request("GET", url)
+        return response
+    elif game == 'mega millions':
+        pass
+    elif game == 'powerball':
+        url = f'https://www.galottery.com/api/v2/draw-games/draws/page?order=desc&previous-draws=100&game-names=POWERBALL&size={size}&status=CLOSED'
+        response = requests.request("GET", url)
+        return response
+    else:
+        return ''
 
 def parse_fantasy_5(response):
     first_list,second_list,third_list,fourth_list,fifth_list = [],[],[],[],[]
@@ -80,7 +89,7 @@ def parse_mega(response):
     return draw_results
 
 def parse_powerball(response):
-    first_list,second_list,third_list,fourth_list,fifth_list,pb_list = [],[],[],[],[],[]
+    first_list,second_list,third_list,fourth_list,fifth_list,pb_list,date_list = [],[],[],[],[],[],[]
     for draw in response.json().get('draws'):
         # time = draw.get('drawTime')
         # temp_date = datetime.datetime.fromtimestamp(time / 1000)
@@ -91,29 +100,38 @@ def parse_powerball(response):
             third_list.append(int(draw.get('results')[0].get('primary')[2]))
             fourth_list.append(int(draw.get('results')[0].get('primary')[3]))
             fifth_list.append(int(draw.get('results')[0].get('primary')[4]))
-            pb_list.append(int(draw.get('results')[0].get('primary')[6]))
-        draw_results = {
-            "first" : first_list, "second" : second_list,"third" : third_list, 
-            "fourth" : fourth_list, "fifth" : fifth_list, "powerball" : pb_list
-        }
+            pball = re.search('\d+$',draw.get('results')[0].get('primary')[6])
+            if pball.group(0):
+                pb_list.append(int(pball.group(0)))
+            time = draw.get('drawTime')
+            temp_date = datetime.datetime.fromtimestamp(time / 1000)
+            date = f"{temp_date.year}-{temp_date.month:02d}-{temp_date.day:02d}"
+            date_list.append(date)
+    draw_results = {
+        'first' : first_list[::-1], 'second' : second_list[::-1],'third' : third_list[::-1], 
+        'fourth' : fourth_list[::-1], 'fifth' : fifth_list[::-1], 'powerball' : pb_list[::-1],
+        'date' : date_list[::-1]
+    }
     return draw_results
 
 def jdump(obj):
     print(json.dumps(obj, indent=2))
 
 
-while True:
-    choice = input(f'Which game do you want? Fantasy 5, Mega Millions, or Powerball? ')
-    if choice.lower() in ['fantasy 5', 'mega millions', 'powerball']:
-        break
-    else:
-        print(f'Please provide a valid game selection.')
+def choose_game():
+    while True:
+        choice = input(f'Which game do you want? Fantasy 5, Mega Millions, or Powerball? ')
+        if choice.lower() in ['fantasy 5', 'mega millions', 'powerball']:
+            break
+        else:
+            print(f'Please provide a valid game selection.')
 
-response = get_search_results(game_dict.get(choice.lower()) , 20)
+    response = get_search_results(choice.lower() , 20)
 
-if choice.lower() == 'fantasy 5':
-    results = parse_fantasy_5(response)
-elif choice.lower() == 'mega millions':
-    results = parse_mega(response)
-else:
-    results = parse_powerball(response)   
+    if choice.lower() == 'fantasy 5':
+        results = parse_fantasy_5(response)
+    elif choice.lower() == 'mega millions':
+        results = parse_mega(response)
+    elif choice.lower() == 'powerball':
+        results = parse_powerball(response)
+    return results 
